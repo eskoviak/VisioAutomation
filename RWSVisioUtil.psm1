@@ -13,6 +13,17 @@ function New-Diagram {
     
 }
 
+function Get-VisioObject {
+  param (
+    # Bring in PS Defaults
+    [CmdletBinding()]
+    [Parameter()]
+    [String]$DocumentName = ""
+    
+  )
+  
+}
+
 Export-ModuleMember
 #### End PUBLIC Funtions
 
