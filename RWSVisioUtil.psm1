@@ -19,18 +19,32 @@ Add-Type -TypeDefinition @"
   }
 "@
 
-function Get-VisioObject {
+function Get-VisioInstance {
   param (
     # Bring in PS Defaults
     [CmdletBinding()]
-    [Parameter()]
-    [String]$DocumentName = ""
+    [Parameter(Mandatory=$true,
+      HelpMessage='The name of the loaded document (ends in .vsdx)')]
+    [String]$DocumentName
 
   )
-  
+  try {
+    $objects = Get-VisioObject
+  } catch [ERRNoObjFound] {
+    Write-Host('No running visio process') -ForegroundColor Red
+  } catch {
+    Write-Host('Unknown Exception {0}' -f $_) -ForegroundColor Red
+    
+  }  
+    <# if($_ -eq [VisioError]::ERRNoObjFound) {
+      Write-Host('No running visio process') -ForegroundColor Red
+    } else {
+      Write-Host('Unknown Exception {0}' -f $_) -ForegroundColor Red
+    } #>
 }
 
-Export-ModuleMember
+
+Export-ModuleMember Get-VisioInstance
 #### End PUBLIC Funtions
 
 #### Begin PRIVATE Funtions
@@ -56,8 +70,7 @@ function Get-VisioObject () {
     # Since no COMException was thrown a visio application object is found in the object store
     Write-Output $visio
   } catch [System.Runtime.InteropServices.COMException] {
-    Write-Host('No Excel Objects Found')
-    throw 'ERRNoObjFound'
+    throw [VisioError]::ERRNoObjFound
   }
 }
 
