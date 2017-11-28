@@ -22,14 +22,19 @@ Add-Type -TypeDefinition @"
 function Get-VisioInstance {
   param (
     # Bring in PS Defaults
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName="All")]
     [Parameter(Mandatory=$true,
-      HelpMessage='The name of the loaded document (ends in .vsdx)')]
-    [String]$DocumentName
+      HelpMessage='The name of the loaded document (ends in .vsdx)',
+      ParameterSetName="DocumentName")]
+    [String]$DocumentName,
+
+    [Parameter(ParameterSetName="All")]
+    [switch]$GetAll
 
   )
   try {
     Write-Output(Get-VisioObject)
+
   } catch {
     Write-Host($_) -ForegroundColor Red
   } 
