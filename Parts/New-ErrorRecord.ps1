@@ -5,6 +5,10 @@
     $null
 ) #>
 
-$myError = [System.Management.Automation.ErrorRecord]::new([System.Management.Automation.ItemNotFoundException], 'App object not found',
-  [System.Management.Automation.ErrorCategory]::ObjectNotFound, $null)
+$myError = [System.Management.Automation.ErrorRecord]::new(
+  [System.Exception]::new('String'),
+  'App object not found',
+  [System.Management.Automation.ErrorCategory]::ObjectNotFound,
+  {}
+  )
 Write-Output $myError

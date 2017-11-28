@@ -29,18 +29,10 @@ function Get-VisioInstance {
 
   )
   try {
-    $objects = Get-VisioObject
-  } catch [ERRNoObjFound] {
-    Write-Host('No running visio process') -ForegroundColor Red
+    Write-Output(Get-VisioObject)
   } catch {
-    Write-Host('Unknown Exception {0}' -f $_) -ForegroundColor Red
-    
-  }  
-    <# if($_ -eq [VisioError]::ERRNoObjFound) {
-      Write-Host('No running visio process') -ForegroundColor Red
-    } else {
-      Write-Host('Unknown Exception {0}' -f $_) -ForegroundColor Red
-    } #>
+    Write-Host($_) -ForegroundColor Red
+  } 
 }
 
 
@@ -70,7 +62,14 @@ function Get-VisioObject () {
     # Since no COMException was thrown a visio application object is found in the object store
     Write-Output $visio
   } catch [System.Runtime.InteropServices.COMException] {
-    throw [VisioError]::ERRNoObjFound
+    # The COMException is thrown if there is no Visio.application object in the Object Running Table
+    # Throw a custom object
+    throw [System.Management.Automation.ErrorRecord]::new(
+      [System.Exception]::new('No Visio Object Found'),
+      'App object not found',
+      [System.Management.Automation.ErrorCategory]::ObjectNotFound,
+      {}
+      )
   }
 }
 
