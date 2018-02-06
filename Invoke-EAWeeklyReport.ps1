@@ -20,22 +20,26 @@ $EAWorkSheet = $EAWorkbook.Sheets.Item($EAProjectListStatus)
 $excel.Visible = $false
 #$range = $EAWorkSheet.UsedRange
 
-# Get the column Headers
-$column = 1
+#lamba function to get the current cell
 $currentCell = { param($row, $column) $EAWorkSheet.Cells($row, $column)}
 
+# get the column headers
+$column = 1
+$headers = @()
 while ($currentCell.Invoke(1, $column).Text() -ne [string]::Empty ) {
-    Write-Host ("Heading: {0}" -f $currentCell.Invoke(1, $column).Text())
+    $headers += $($currentCell.Invoke(1, $column).Text() -replace "\s+", " ")
     $column += 1
 }
 
-#Write-Host ("A1: {0}" -f $EAWorkSheet.Cells(1,1).Value())
+#Write-Host $headers.Length
+# Create the row template
+$EAProjectItemRowTempate = New-Object psobject
+foreach($colHead in $headers) {
+    Add-Member -InputObject $EAProjectItemRowTempate -MemberType NoteProperty -Name $colHead -Value ""
+}
 
+Write-Output $EAProjectItemRowTempate
 
-#Write-Host ("Range Address {0}, Range End {1}" -f $range.Address(), $range.End([Microsoft.Office.Interop.Excel.XlDirection]::xlToRight).Address())
-<# foreach($row in $range.Rows) {
-    write-host $("Row: {0}; ???: {1}" -f $row.Row, $range.Item($row.Row,1).Value())
-} #>
 
 # Close down Excel Gracefully and Completely
 $EAWorkbook.Close($false)
