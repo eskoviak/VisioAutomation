@@ -18,11 +18,24 @@ $EAWorkbook = $excel.Workbooks.Open($EAProjectListWorkbook)
 $EAWorkSheet = $EAWorkbook.Sheets.Item($EAProjectListStatus)
 # Keep the application hidden
 $excel.Visible = $false
-$range = $EAWorkSheet.UsedRange
-#Write-Host ($range.Address())
-foreach($row in $range.Rows) {
-    write-host $("Row: {0}; ???: {1}" -f $row.Row, $range.Item($row.Row,1).Value())
+#$range = $EAWorkSheet.UsedRange
+
+# Get the column Headers
+$column = 1
+$currentCell = { param($row, $column) $EAWorkSheet.Cells($row, $column)}
+
+while ($currentCell.Invoke(1, $column).Text() -ne [string]::Empty ) {
+    Write-Host ("Heading: {0}" -f $currentCell.Invoke(1, $column).Text())
+    $column += 1
 }
+
+#Write-Host ("A1: {0}" -f $EAWorkSheet.Cells(1,1).Value())
+
+
+#Write-Host ("Range Address {0}, Range End {1}" -f $range.Address(), $range.End([Microsoft.Office.Interop.Excel.XlDirection]::xlToRight).Address())
+<# foreach($row in $range.Rows) {
+    write-host $("Row: {0}; ???: {1}" -f $row.Row, $range.Item($row.Row,1).Value())
+} #>
 
 # Close down Excel Gracefully and Completely
 $EAWorkbook.Close($false)
