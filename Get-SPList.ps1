@@ -30,6 +30,6 @@ $context = Get-SPOContext -Url $Url -UserName $UserName -Password $Password
 $items = Get-ListItems -Context $context -ListTitle "Activities" 
 foreach($item in $items)
 {
-   Write-Host ("::{0}" -f $item.DisplayName)
+   Write-Host ("::{0}" -f $item.Context)
 }
 $context.Dispose()
